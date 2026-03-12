@@ -1,0 +1,35 @@
+{
+  "name": "@openclaw/napcat",
+  "version": "0.1.0",
+  "description": "OpenClaw QQ channel plugin via NapCat (OneBot 11)",
+  "type": "module",
+  "dependencies": {
+    "ws": "^8.18.0"
+  },
+  "peerDependencies": {
+    "openclaw": "*"
+  },
+  "openclaw": {
+    "extensions": [
+      "./index.ts"
+    ],
+    "channel": {
+      "id": "napcat",
+      "label": "QQ (NapCat)",
+      "selectionLabel": "QQ via NapCat (OneBot 11)",
+      "docsPath": "/channels/napcat",
+      "docsLabel": "napcat",
+      "blurb": "QQ messaging via NapCat OneBot 11 reverse WebSocket.",
+      "aliases": [
+        "qq",
+        "onebot"
+      ],
+      "order": 90,
+      "quickstartAllowFrom": true
+    },
+    "install": {
+      "localPath": "extensions/napcat",
+      "defaultChoice": "local"
+    }
+  }
+}
