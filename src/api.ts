@@ -132,3 +132,18 @@ export function replySegment(messageId: number | string): OneBotSegment {
 export function recordSegment(fileUrl: string): OneBotSegment {
   return { type: "record", data: { file: fileUrl } };
 }
+
+/** Get message details by message ID. */
+export async function getMsg(
+  baseUrl: string,
+  messageId: number,
+  accessToken?: string,
+): Promise<{ message_id: number; message: OneBotSegment[]; raw_message: string; sender: Record<string, unknown> }> {
+  const resp = await callOneBotApi<{
+    message_id: number;
+    message: OneBotSegment[];
+    raw_message: string;
+    sender: Record<string, unknown>;
+  }>(baseUrl, "get_msg", { message_id: messageId }, { accessToken });
+  return resp.data;
+}

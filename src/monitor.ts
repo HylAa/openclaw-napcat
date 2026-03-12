@@ -20,7 +20,7 @@ import {
 } from "openclaw/plugin-sdk";
 import type { ResolvedNapCatAccount } from "./types.js";
 import type { OneBotMessageEvent, OneBotSegment } from "./types.js";
-import { sendGroupMsg, sendPrivateMsg, textSegment, replySegment } from "./api.js";
+import { sendGroupMsg, sendPrivateMsg, textSegment, replySegment, getMsg } from "./api.js";
 import { getNapCatRuntime } from "./runtime.js";
 
 export type NapCatRuntimeEnv = {
@@ -41,6 +41,45 @@ export type NapCatMonitorOptions = {
 type NapCatCoreRuntime = ReturnType<typeof getNapCatRuntime>;
 
 const QQ_TEXT_LIMIT = 4500;
+
+/** Extract the reply message ID from segments (if any). */
+function extractReplyMessageId(segments: OneBotSegment[]): number | undefined {
+  const reply = segments.find((s) => s.type === "reply");
+  if (!reply?.data.id) return undefined;
+  const id = Number(reply.data.id);
+  return Number.isFinite(id) ? id : undefined;
+}
+
+/** Fetch the quoted message text via get_msg API. Returns formatted quote or undefined. */
+async function fetchQuotedMessageText(
+  httpApi: string,
+  messageId: number,
+  accessToken?: string,
+): Promise<string | undefined> {
+  try {
+    const msg = await getMsg(httpApi, messageId, accessToken);
+    const senderName =
+      (msg.sender.card as string) || (msg.sender.nickname as string) || String(msg.sender.user_id ?? "unknown");
+    // Extract text from the quoted message segments
+    const quotedText = msg.message
+      .map((s) => {
+        if (s.type === "text") return s.data.text ?? "";
+        if (s.type === "at") return `@${s.data.qq}`;
+        if (s.type === "image") return "[图片]";
+        if (s.type === "face") return "[表情]";
+        if (s.type === "record") return "[语音]";
+        if (s.type === "video") return "[视频]";
+        if (s.type === "file") return "[文件]";
+        return "";
+      })
+      .join("")
+      .trim();
+    if (!quotedText) return undefined;
+    return `[引用 ${senderName} 的消息: ${quotedText}]`;
+  } catch {
+    return undefined;
+  }
+}
 
 /** Extract plain text from OneBot message segments, converting @mentions to readable form. */
 function extractText(segments: OneBotSegment[]): string {
@@ -225,9 +264,22 @@ async function processMessage(
     ? stripBotMention(event.message, selfId)
     : event.message;
 
-  const text = extractText(cleanSegments);
+  let text = extractText(cleanSegments);
   const imageUrls = extractImageUrls(cleanSegments);
   const recordUrl = extractRecordUrl(cleanSegments);
+
+  // Fetch quoted message content if this is a reply
+  const replyMsgId = extractReplyMessageId(event.message);
+  if (replyMsgId) {
+    const quotedText = await fetchQuotedMessageText(
+      account.httpApi,
+      replyMsgId,
+      account.accessToken,
+    );
+    if (quotedText) {
+      text = quotedText + "\n" + text;
+    }
+  }
 
   // Skip empty messages
   if (!text && imageUrls.length === 0 && !recordUrl) return;
