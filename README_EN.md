@@ -122,15 +122,17 @@ Let your AI assistant fully control QQ interactions through natural language -- 
 
 ## Installation
 
+**Option 1: Install from npm (recommended)**
+
 ```bash
-openclaw install extensions/napcat
+openclaw plugins install @hyl_aa/openclaw-napcat
 ```
 
-Or clone this repo into your OpenClaw extensions directory:
+**Option 2: Manual clone**
 
 ```bash
 cd ~/.openclaw/extensions
-git clone https://github.com/HylAa/openclaw-napcat.git napcat
+git clone https://github.com/Aliang1337/openclaw-napcat.git napcat
 cd napcat && npm install --omit=dev
 ```
 
@@ -212,4 +214,4 @@ MIT
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=HylAa/openclaw-napcat&type=date&legend=top-left)](https://www.star-history.com/#HylAa/openclaw-napcat&type=date&legend=top-left)
+[![Star History Chart](https://api.star-history.com/svg?repos=Aliang1337/openclaw-napcat&type=date&legend=top-left)](https://www.star-history.com/#Aliang1337/openclaw-napcat&type=date&legend=top-left)

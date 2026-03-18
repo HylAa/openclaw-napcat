@@ -122,15 +122,17 @@ OpenClaw 的 QQ 消息通道插件，基于 [NapCat](https://github.com/NapNeko/
 
 ## 安装
 
+**方式一：从 npm 安装（推荐）**
+
 ```bash
-openclaw install extensions/napcat
+openclaw plugins install @hyl_aa/openclaw-napcat
 ```
 
-或者手动克隆到 OpenClaw 扩展目录：
+**方式二：手动克隆**
 
 ```bash
 cd ~/.openclaw/extensions
-git clone https://github.com/HylAa/openclaw-napcat.git napcat
+git clone https://github.com/Aliang1337/openclaw-napcat.git napcat
 cd napcat && npm install --omit=dev
 ```
 
@@ -212,4 +214,4 @@ MIT
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=HylAa/openclaw-napcat&type=date&legend=top-left)](https://www.star-history.com/#HylAa/openclaw-napcat&type=date&legend=top-left)
+[![Star History Chart](https://api.star-history.com/svg?repos=Aliang1337/openclaw-napcat&type=date&legend=top-left)](https://www.star-history.com/#Aliang1337/openclaw-napcat&type=date&legend=top-left)
